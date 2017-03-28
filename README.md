@@ -14,7 +14,7 @@ p2pkit is an easy to use SDK that bundles together several proximity technologie
 
 3. Add the module to your project
 ```
-react-native install react-native-p2pkit --save
+react-native install react-native-p2pkit
 react-native link react-native-p2pkit
 ```
 
