@@ -13,7 +13,7 @@ import ch.uepaa.p2pkit.discovery.*;
 import ch.uepaa.p2pkit.discovery.Peer;
 
 import android.util.Base64;
-
+import android.util.Log;
 
 
 public class PPKReactBridgeModule extends ReactContextBaseJavaModule implements LifecycleEventListener {
@@ -62,7 +62,7 @@ public class PPKReactBridgeModule extends ReactContextBaseJavaModule implements 
     }
 
     @ReactMethod
-    private void startDiscovery(String discoveryInfoBase64String) {
+    private void startDiscovery(String discoveryInfoBase64String, String discoveryPowerMode) {
 
         if (!P2PKit.isEnabled()) {
             invokePluginResultError("p2pkit is not enabled");
@@ -74,11 +74,18 @@ public class PPKReactBridgeModule extends ReactContextBaseJavaModule implements 
         if (discoveryInfoBase64String != null) {
             discoveryInfo = Base64.decode(discoveryInfoBase64String,Base64.DEFAULT);
         }
+        
+        DiscoveryPowerMode powerModeToUse = getDiscoveryPowerModeFromString(discoveryPowerMode);
+        
+        if (powerModeToUse == null) {
+        	invokePluginResultError("Unknown DiscoveryPowerMode: " + discoveryPowerMode);
+        } else {
 
-        try {
-            P2PKit.startDiscovery(discoveryInfo, mDiscoveryListener);
-        } catch (DiscoveryInfoTooLongException e) {
-            invokePluginResultError("Failed to start discovery with exception " +e.toString());
+        	try {
+            	P2PKit.startDiscovery(discoveryInfo, powerModeToUse, mDiscoveryListener);
+        	} catch (DiscoveryInfoTooLongException e) {
+            	invokePluginResultError("Failed to start discovery with exception " +e.toString());
+        	}
         }
     }
 
@@ -132,6 +139,35 @@ public class PPKReactBridgeModule extends ReactContextBaseJavaModule implements 
             invokePluginResultError("Failed to update discovery info with exception " +e.toString());
         }
 
+    }
+    
+    @ReactMethod
+    private void getDiscoveryPowerMode() {
+    
+    	if (!P2PKit.isEnabled()) {
+            invokePluginResultError("p2pkit is not enabled");
+            return;
+        }
+        
+        WritableMap map = Arguments.createMap();
+        map.putString("discoveryPowerMode",  P2PKit.getDiscoveryPowerMode().name());
+        invokePluginResult("onGetDiscoveryPowerMode", map);
+    }
+    
+    @ReactMethod
+    private void setDiscoveryPowerMode(String discoveryPowerMode) {
+    	
+    	if (!P2PKit.isEnabled()) {
+            invokePluginResultError("p2pkit is not enabled");
+            return;
+        }
+        
+        DiscoveryPowerMode powerModeToUse = getDiscoveryPowerModeFromString(discoveryPowerMode);
+        if (powerModeToUse == null) {
+        	invokePluginResultError("Unknown DiscoveryPowerMode: " + discoveryPowerMode);
+        } else {
+        	P2PKit.setDiscoveryPowerMode(powerModeToUse);
+        }
     }
 
     private final DiscoveryListener mDiscoveryListener = new DiscoveryListener() {
@@ -188,6 +224,15 @@ public class PPKReactBridgeModule extends ReactContextBaseJavaModule implements 
             map.putString("errorCode",String.valueOf(statusResult.getStatusCode()));
             invokePluginResult("onError", map);
         }
+        
+        @Override
+        public void onException(Throwable throwable) {
+        
+        	WritableMap map = Arguments.createMap();
+        	map.putString("platform", "android");
+        	map.putString("message", Log.getStackTraceString(throwable));
+        	invokePluginResult("onException", map);
+        }
     };
 
     private void invokePluginResultError(String errorString) {
@@ -236,6 +281,17 @@ public class PPKReactBridgeModule extends ReactContextBaseJavaModule implements 
 
         return mapPeer;
     }
+    
+    private DiscoveryPowerMode getDiscoveryPowerModeFromString(String discoveryPowerMode) {
+    
+    	if (DiscoveryPowerMode.LOW_POWER.name().equals(discoveryPowerMode)) {
+    		return DiscoveryPowerMode.LOW_POWER;
+    	} else if (DiscoveryPowerMode.HIGH_PERFORMANCE.name().equals(discoveryPowerMode)) {
+    		return DiscoveryPowerMode.HIGH_PERFORMANCE;
+    	} else {
+    		return null;
+    	}
+    } 
 
     @Override
     public void onCatalystInstanceDestroy() {

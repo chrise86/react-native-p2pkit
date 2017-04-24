@@ -43,7 +43,7 @@ var p2pkitCallback = {
     onEnabled: function() {
         console.log('p2pkit is enabled')
         p2pkit.enableProximityRanging()
-        p2pkit.startDiscovery('') //base64 encoded Data (bytes)
+        p2pkit.startDiscovery('', p2pkit.HIGH_PERFORMANCE) //base64 encoded Data (bytes)
     },
 
     onDisabled: function() {
@@ -77,6 +77,10 @@ var p2pkitCallback = {
 
     onGetMyPeerId: function(reply) {
         console.log(reply.myPeerId)
+    },
+    
+    onGetDiscoveryPowerMode: function(reply) {
+    	console.log(reply.discoveryPowerMode)
     }
 }
 

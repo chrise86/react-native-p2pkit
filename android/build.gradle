@@ -17,6 +17,6 @@ repositories {
 }
 
 dependencies {
-  compile 'ch.uepaa.p2p:p2pkit-android:2.0.4'
+  compile 'ch.uepaa.p2p:p2pkit-android:2.0.6'
   compile "com.facebook.react:react-native:+"
 }
