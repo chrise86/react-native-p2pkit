@@ -68,9 +68,15 @@ RCT_EXPORT_METHOD(getMyPeerId)  {
     });
 }
 
-RCT_EXPORT_METHOD(startDiscovery:(NSString*)discoveryInfoBase64 discoveryPowerMode:(NSString*)discoveryPowerMode)  {
+RCT_EXPORT_METHOD(startDiscovery:(NSString*)discoveryInfoBase64 options:(NSDictionary *)options)  {
 
     dispatch_async(dispatch_get_main_queue(), ^{
+
+        bool stateRestoration = NO;
+
+        if ([options objectForKey:@"stateRestoration"]) {
+            stateRestoration = options[@"stateRestoration"];
+        }
 
         if (![PPKController isEnabled]) {
             [self invokePluginResultErrorWithString:@"p2pkit is not enabled"];
@@ -90,7 +96,7 @@ RCT_EXPORT_METHOD(startDiscovery:(NSString*)discoveryInfoBase64 discoveryPowerMo
         }
 
         @try {
-            [PPKController startDiscoveryWithDiscoveryInfo:discoveryInfo stateRestoration:NO];
+            [PPKController startDiscoveryWithDiscoveryInfo:discoveryInfo stateRestoration:stateRestoration];
         } @catch (NSException *exception) {
             [self invokePluginResultErrorWithString:[NSString stringWithFormat:@"Failed to start discovery with exception %@", exception.description]];
         }
@@ -168,7 +174,7 @@ RCT_EXPORT_METHOD(getDiscoveryPowerMode)  {
 RCT_EXPORT_METHOD(setDiscoveryPowerMode:(NSString*)discoveryPowerMode)  {
 
     dispatch_async(dispatch_get_main_queue(), ^{
-    
+
         [self invokePluginResultErrorWithString:@"Power modes are not available on iOS"];
     });
 }
