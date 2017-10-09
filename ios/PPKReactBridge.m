@@ -275,6 +275,8 @@ RCT_EXPORT_METHOD(setDiscoveryPowerMode:(NSString*)discoveryPowerMode)  {
 }
 
 -(void)dealloc {
+  if ([PPKController isEnabled]) {
     [PPKController disable];
+  }
 }
 @end
