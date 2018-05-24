@@ -17,15 +17,16 @@ p2pkit is an easy to use SDK that bundles together several proximity technologie
 react-native install react-native-p2pkit
 react-native link react-native-p2pkit
 ```
+4. Afterwards you need to replace the react-native-p2pkit dependency in the package.json file with "react-native-p2pkit": "git://github.com/Uepaa-AG/react-native-p2pkit.git". Then run ``npm install`` to update the dependencies.
 
-4. Setup and link the p2pkit framework on your native environments:
+5. Setup and link the p2pkit framework on your native environments:
   * <strong>iOS</strong>: Follow the [CocoaPods setup](http://p2pkit.io/developer/get-started/ios/#signup)
 > Currently the module is configured to use CocoaPods for fetching and linking the P2PKit.framework. If you are getting "header search paths" errors, make sure to compile the Pods project at least once so that the p2pkit headers will be exported to ./Pods/Headers/Public, the module is configured to search for them there. Note that Bitcode is not supported, you would need to disable Bitcode in your iOS project.
   
   * <strong>Android</strong>: Follow the [setup here](http://p2pkit.io/developer/get-started/android/)
 > Don't forget to add the p2pkit maven repository to your app's gradle file (as mentioned in the link above)
 
-5. Once you have configured p2pkit on each platform, you can go ahead and build your react-native app.
+6. Once you have configured p2pkit on each platform, you can go ahead and build your react-native app.
 
 ## Example
 
