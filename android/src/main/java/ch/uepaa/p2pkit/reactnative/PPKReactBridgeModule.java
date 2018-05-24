@@ -300,7 +300,9 @@ public class PPKReactBridgeModule extends ReactContextBaseJavaModule implements 
 
     @Override
     public void onCatalystInstanceDestroy() {
-        P2PKit.disable();
+        if (P2PKit.isEnabled()) {
+            P2PKit.disable();
+        }
     }
 
     @Override
