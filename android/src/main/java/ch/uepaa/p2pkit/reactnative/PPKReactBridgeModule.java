@@ -6,6 +6,7 @@ import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.Arguments;
 import com.facebook.react.bridge.ReactMethod;
 import com.facebook.react.bridge.WritableMap;
+import com.facebook.react.bridge.ReadableMap;
 import com.facebook.react.modules.core.DeviceEventManagerModule;
 
 import ch.uepaa.p2pkit.*;
@@ -46,7 +47,9 @@ public class PPKReactBridgeModule extends ReactContextBaseJavaModule implements 
 
     @ReactMethod
     private void disable() {
-        P2PKit.disable();
+        if (P2PKit.isEnabled()) {
+            P2PKit.disable();
+        }
     }
 
     private void getMyPeerId() {
@@ -62,7 +65,7 @@ public class PPKReactBridgeModule extends ReactContextBaseJavaModule implements 
     }
 
     @ReactMethod
-    private void startDiscovery(String discoveryInfoBase64String, String discoveryPowerMode) {
+    private void startDiscovery(String discoveryInfoBase64String, ReadableMap options) {
 
         if (!P2PKit.isEnabled()) {
             invokePluginResultError("p2pkit is not enabled");
@@ -74,9 +77,11 @@ public class PPKReactBridgeModule extends ReactContextBaseJavaModule implements 
         if (discoveryInfoBase64String != null) {
             discoveryInfo = Base64.decode(discoveryInfoBase64String,Base64.DEFAULT);
         }
-        
+
+        String discoveryPowerMode = options.getString("discoveryPowerMode");
+
         DiscoveryPowerMode powerModeToUse = getDiscoveryPowerModeFromString(discoveryPowerMode);
-        
+
         if (powerModeToUse == null) {
         	invokePluginResultError("Unknown DiscoveryPowerMode: " + discoveryPowerMode);
         } else {
@@ -140,28 +145,28 @@ public class PPKReactBridgeModule extends ReactContextBaseJavaModule implements 
         }
 
     }
-    
+
     @ReactMethod
     private void getDiscoveryPowerMode() {
-    
+
     	if (!P2PKit.isEnabled()) {
             invokePluginResultError("p2pkit is not enabled");
             return;
         }
-        
+
         WritableMap map = Arguments.createMap();
         map.putString("discoveryPowerMode",  P2PKit.getDiscoveryPowerMode().name());
         invokePluginResult("onGetDiscoveryPowerMode", map);
     }
-    
+
     @ReactMethod
     private void setDiscoveryPowerMode(String discoveryPowerMode) {
-    	
+
     	if (!P2PKit.isEnabled()) {
             invokePluginResultError("p2pkit is not enabled");
             return;
         }
-        
+
         DiscoveryPowerMode powerModeToUse = getDiscoveryPowerModeFromString(discoveryPowerMode);
         if (powerModeToUse == null) {
         	invokePluginResultError("Unknown DiscoveryPowerMode: " + discoveryPowerMode);
@@ -224,10 +229,10 @@ public class PPKReactBridgeModule extends ReactContextBaseJavaModule implements 
             map.putString("errorCode",String.valueOf(statusResult.getStatusCode()));
             invokePluginResult("onError", map);
         }
-        
+
         @Override
         public void onException(Throwable throwable) {
-        
+
         	WritableMap map = Arguments.createMap();
         	map.putString("platform", "android");
         	map.putString("message", Log.getStackTraceString(throwable));
@@ -281,9 +286,9 @@ public class PPKReactBridgeModule extends ReactContextBaseJavaModule implements 
 
         return mapPeer;
     }
-    
+
     private DiscoveryPowerMode getDiscoveryPowerModeFromString(String discoveryPowerMode) {
-    
+
     	if (DiscoveryPowerMode.LOW_POWER.name().equals(discoveryPowerMode)) {
     		return DiscoveryPowerMode.LOW_POWER;
     	} else if (DiscoveryPowerMode.HIGH_PERFORMANCE.name().equals(discoveryPowerMode)) {
@@ -291,11 +296,13 @@ public class PPKReactBridgeModule extends ReactContextBaseJavaModule implements 
     	} else {
     		return null;
     	}
-    } 
+    }
 
     @Override
     public void onCatalystInstanceDestroy() {
-        P2PKit.disable();
+        if (P2PKit.isEnabled()) {
+            P2PKit.disable();
+        }
     }
 
     @Override
