@@ -244,7 +244,8 @@ RCT_EXPORT_METHOD(setDiscoveryPowerMode:(NSString*)discoveryPowerMode)  {
         [statusMessage setObject:name forKey:@"methodName"];
         if(params) [statusMessage setObject:params forKey:@"params"];
 
-        [self sendEventWithName:@"callback" body:statusMessage];
+        // [self sendEventWithName:@"callback" body:statusMessage];
+        [self sendEventWithName:name body:params];
     });
 }
 
@@ -270,8 +271,9 @@ RCT_EXPORT_METHOD(setDiscoveryPowerMode:(NSString*)discoveryPowerMode)  {
     [super stopObserving];
 }
 
-- (NSArray<NSString *> *)supportedEvents {
-    return @[@"callback"];
+- (NSArray<NSString *> *)supportedEvents
+{
+  return @[@"onEnabled", @"onException", @"onDisabled", @"onError", @"onDiscoveryStateChanged", @"onPeerDiscovered", @"onPeerLost", @"onProximityStrengthChanged", @"onGetMyPeerId", @"onGetDiscoveryPowerMode"];
 }
 
 -(void)dealloc {

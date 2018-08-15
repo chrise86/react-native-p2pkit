@@ -14,49 +14,41 @@ const { PPKReactBridge } = NativeModules;
 export default class P2PKit {
   static LOW_POWER = 'LOW_POWER';
   static HIGH_PERFORMANCE = 'HIGH_PERFORMANCE';
-  static p2pkitCallbackHandler_;
   static p2pkitCallbackEmitter = new NativeEventEmitter(PPKReactBridge);
 
-  static subscription = P2PKit.p2pkitCallbackEmitter.addListener(
-    'callback',
-    (nativeCallback) => {
-      if (P2PKit.p2pkitCallbackHandler_[nativeCallback.methodName]) {
-        P2PKit.p2pkitCallbackHandler_[nativeCallback.methodName](nativeCallback.params);
-      }
-    }
-  )
+  static addListener(name, callback) {
+    P2PKit.p2pkitCallbackEmitter.addListener(name, callback);
+  }
 
-  static enable(appkey, p2pkitCallbackHandler) {
-    if (!p2pkitCallbackHandler) {
-      throw 'You must enable p2pkit with appropriate callbacks';
-    }
+  static removeListener(name, callback) {
+    P2PKit.p2pkitCallbackEmitter.removeListener(name, callback);
+  }
 
-    P2PKit.p2pkitCallbackHandler_ = p2pkitCallbackHandler;
-
+  static enable(appkey) {
     PPKReactBridge.enable(appkey);
   }
 
-  static disable(){
+  static disable() {
     PPKReactBridge.disable();
   }
 
-  static getMyPeerId(myPeerId){
+  static getMyPeerId(myPeerId) {
     PPKReactBridge.getMyPeerId();
   }
 
-  static startDiscovery(discoveryInfo, discoveryPowerMode){
+  static startDiscovery(discoveryInfo, discoveryPowerMode) {
     PPKReactBridge.startDiscovery(discoveryInfo, discoveryPowerMode);
   }
 
-  static stopDiscovery(){
+  static stopDiscovery() {
     PPKReactBridge.stopDiscovery();
   }
 
-  static enableProximityRanging(){
+  static enableProximityRanging() {
     PPKReactBridge.enableProximityRanging();
   }
 
-  static pushNewDiscoveryInfo(discoveryInfo){
+  static pushNewDiscoveryInfo(discoveryInfo) {
     PPKReactBridge.pushNewDiscoveryInfo(discoveryInfo);
   }
 
