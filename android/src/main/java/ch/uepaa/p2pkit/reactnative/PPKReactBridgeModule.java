@@ -253,7 +253,7 @@ public class PPKReactBridgeModule extends ReactContextBaseJavaModule implements 
         invokePluginResult("onException", map);
     }
 
-    private void invokePluginResult(String methodName, WritableMap parms) {
+    private void invokePluginResult(String methodName, WritableMap params) {
 
       if (mApplicationContext == null) {
           P2PKit.disable();
@@ -267,7 +267,7 @@ public class PPKReactBridgeModule extends ReactContextBaseJavaModule implements 
         WritableMap moduleResponse = Arguments.createMap();
 
         moduleResponse.putString("methodName",methodName);
-        if (parms != null) moduleResponse.putMap("parms",parms);
+        if (params != null) moduleResponse.putMap("params",params);
 
         mApplicationContext.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class).emit("callback", moduleResponse);
     }
