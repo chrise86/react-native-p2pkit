@@ -264,12 +264,7 @@ public class PPKReactBridgeModule extends ReactContextBaseJavaModule implements 
             return;
         }
 
-        WritableMap moduleResponse = Arguments.createMap();
-
-        moduleResponse.putString("methodName",methodName);
-        if (params != null) moduleResponse.putMap("params",params);
-
-        mApplicationContext.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class).emit("callback", moduleResponse);
+        mApplicationContext.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class).emit(methodName, params);
     }
 
     private WritableMap createMapFromPeer(Peer peer) {
