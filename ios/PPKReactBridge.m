@@ -273,7 +273,7 @@ RCT_EXPORT_METHOD(setDiscoveryPowerMode:(NSString*)discoveryPowerMode)  {
 
 - (NSArray<NSString *> *)supportedEvents
 {
-  return @[@"onEnabled", @"onException", @"onDisabled", @"onError", @"onDiscoveryStateChanged", @"onPeerDiscovered", @"onPeerLost", @"onProximityStrengthChanged", @"onGetMyPeerId", @"onGetDiscoveryPowerMode"];
+  return @[@"onEnabled", @"onException", @"onDisabled", @"onError", @"onDiscoveryStateChanged", @"onPeerDiscovered", @"onPeerLost", @"onProximityStrengthChanged", @"onGetMyPeerId", @"onGetDiscoveryPowerMode", @"onPeerUpdatedDiscoveryInfo"];
 }
 
 -(void)dealloc {
