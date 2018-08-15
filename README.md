@@ -30,7 +30,7 @@ react-native link react-native-p2pkit
 
 ## Example
 
-Here is an example that implements p2pkit functionality. Begin by calling <code>startP2PKit()</code>:
+Here is an example that implements p2pkit functionality:
 
 ```
 import p2pkit from 'react-native-p2pkit';
