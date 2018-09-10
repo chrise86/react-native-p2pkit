@@ -232,7 +232,9 @@ RCT_EXPORT_METHOD(setDiscoveryPowerMode:(NSString*)discoveryPowerMode)  {
     dispatch_async(dispatch_get_main_queue(), ^{
 
         if (!hasListeners_) {
-            [PPKController disable];
+            if ([PPKController isEnabled]) {
+                [PPKController disable];
+            }
             return;
         }
 
@@ -240,11 +242,6 @@ RCT_EXPORT_METHOD(setDiscoveryPowerMode:(NSString*)discoveryPowerMode)  {
             return;
         }
 
-        NSMutableDictionary *statusMessage = [NSMutableDictionary new];
-        [statusMessage setObject:name forKey:@"methodName"];
-        if(params) [statusMessage setObject:params forKey:@"params"];
-
-        // [self sendEventWithName:@"callback" body:statusMessage];
         [self sendEventWithName:name body:params];
     });
 }
